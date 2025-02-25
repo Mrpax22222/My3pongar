@@ -1,0 +1,376 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #fff;
+    overflow: hidden;
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    touch-action: none; /* Important for AR interactions */
+}
+
+#landing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    background: linear-gradient(45deg, #ff00cc, #3333ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 10px rgba(255, 0, 204, 0.3);
+}
+
+p {
+    margin-bottom: 30px;
+    font-size: 1.2rem;
+    max-width: 600px;
+}
+
+button {
+    background: linear-gradient(45deg, #ff00cc, #3333ff);
+    border: none;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: 30px;
+    box-shadow: 0 0 15px rgba(255, 0, 204, 0.3);
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(255, 0, 204, 0.7);
+}
+
+.experience-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    max-width: 900px;
+}
+
+.experience-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    width: 250px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.experience-item:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.experience-item.active {
+    border: 2px solid #ff00cc;
+    background: rgba(255, 0, 204, 0.1);
+    box-shadow: 0 0 15px rgba(255, 0, 204, 0.5);
+}
+
+.experience-item h3 {
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+}
+
+#arContent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+#arContent canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+#ui {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 20px;
+    pointer-events: auto; /* Important for AR dom-overlay */
+}
+
+#score {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+#exitAR {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 15px;
+    font-size: 1rem;
+    min-width: 100px;
+}
+
+/* For devices that don't support AR */
+#arNotSupported {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1100;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+#arNotSupported.visible {
+    display: flex;
+}
+
+#arNotSupported div {
+    background: #333;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+}
+
+#arNotSupported button {
+    margin: 10px;
+    width: auto;
+}
+
+/* Debug panel */
+#debug-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-height: 30vh;
+    background: rgba(0, 0, 0, 0.8);
+    color: #00ff00;
+    padding: 10px;
+    font-family: monospace;
+    overflow-y: auto;
+    z-index: 2000;
+    display: none;
+    border-top: 2px solid #00ff00;
+}
+
+#debug-panel.visible {
+    display: block;
+}
+
+#debug-content {
+    max-height: calc(30vh - 60px);
+    overflow-y: auto;
+}
+
+#toggle-debug {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    z-index: 2001;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #00ff00;
+    color: #00ff00;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    border-radius: 5px;
+}
+
+#debug-content .log {
+    color: #00ff00;
+    margin: 2px 0;
+    word-wrap: break-word;
+}
+
+#debug-content .warn {
+    color: #ffff00;
+    margin: 2px 0;
+    word-wrap: break-word;
+}
+
+#debug-content .error {
+    color: #ff0000;
+    margin: 2px 0;
+    font-weight: bold;
+    word-wrap: break-word;
+}
+
+#debug-content .time {
+    color: #aaaaaa;
+    margin-right: 5px;
+}
+
+/* Game loading indicator */
+.loading-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px 40px;
+    border-radius: 10px;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: none;
+}
+
+.loading-indicator.visible {
+    display: flex;
+}
+
+.spinner {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #ffffff;
+    animation: spin 1s infinite linear;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* AR Placement instructions */
+.ar-instructions {
+    position: fixed;
+    bottom: 20%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.instructions-content {
+    display: inline-block;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    max-width: 80%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Permission request overlay */
+.permission-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.permission-content {
+    background: #333;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 90%;
+}
+
+.permission-overlay button {
+    margin-top: 20px;
+}
+
+/* Enhanced AR placement indicator */
+#arInstructionsOverlay .instructions-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 25px;
+}
+
+#arInstructionsOverlay .instructions-content h3 {
+    color: #00ffcc;
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+}
+
+#arInstructionsOverlay .instructions-content p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* Mobile specific styles */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .experience-list {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    #score {
+        font-size: 1.2rem;
+        padding: 8px 16px;
+    }
+}
+
+/* Fix for iOS Safari 100vh issue */
+@supports (-webkit-touch-callout: none) {
+    html, body {
+        height: -webkit-fill-available;
+    }
+    
+    #landing {
+        height: -webkit-fill-available;
+    }
+}

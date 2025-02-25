@@ -1,0 +1,58 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AR Experience Hub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="landing">
+        <h1>AR Experience Hub</h1>
+        <p>Welcome to your AR hub of experiences!</p>
+        <button id="startAR">Enter AR</button>
+        
+        <div class="experience-list">
+            <div class="experience-item active" data-experience="pong">
+                <h3>AR Pong</h3>
+                <p>Play a classic game of pong in augmented reality</p>
+            </div>
+            <div class="experience-item" data-experience="future1">
+                <h3>Coming Soon</h3>
+                <p>More AR experiences on the way</p>
+            </div>
+            <div class="experience-item" data-experience="future2">
+                <h3>Coming Soon</h3>
+                <p>More AR experiences on the way</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="arContent">
+        <div id="ui">
+            <div id="score">
+                <span id="playerScore">0</span> - <span id="aiScore">0</span>
+            </div>
+            <button id="exitAR">Exit AR</button>
+        </div>
+    </div>
+
+    <div id="debug-panel">
+        <h3>Debug Info</h3>
+        <div id="debug-content"></div>
+    </div>
+    <button id="toggle-debug">Toggle Debug Panel</button>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    <script src="js/debug-utility.js" type="module"></script>
+    <script src="js/ar-scene.js" type="module"></script>
+    <script src="js/pong-game.js" type="module"></script>
+    <script src="js/app.js" type="module"></script>
+</body>
+</html>
